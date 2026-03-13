@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-    baseURL: "https://resume-generate-lztt.onrender.com",
+    baseURL:"https://resume-generate-lztt.onrender.com",
     withCredentials: true,
 })
 
