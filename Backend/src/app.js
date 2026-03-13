@@ -12,6 +12,7 @@ app.use(cors({
   origin: [
     "http://localhost:5173",
     "https://resume-generate-lztt.onrender.com",// <-- allow your frontend domain
+    "https://resume-generate-two.vercel.app" // <-- allow your Vercel frontend
   ],
   credentials: true
 }))
