@@ -8,43 +8,49 @@ const tokenBlackListModel = require("../models/blacklist.model")
 * - POST /api/auth/register
 */
 async function userRegisterController(req, res) {
-try {
+  try {
 
-const { email, password, username } = req.body
+    const { email, password, name } = req.body
 
-const isExists = await userModel.findOne({ email })
+    const isExists = await userModel.findOne({ email })
 
-if (isExists) {
-return res.status(422).json({
-message: "User already exists with email."
+    if (isExists) {
+      return res.status(422).json({
+        message: "User already exists with email."
+      })
+    }
+
+    const user = await userModel.create({
+      email,
+      password,
+      name
+    })
+
+    const token = jwt.sign(
+      { userId: user._id },
+      process.env.JWT_SECRET,
+      { expiresIn: "3d" }
+    )
+
+    res.cookie("token", token, {
+     httpOnly: true,
+     secure: true,
+     sameSite: "none"
 })
-}
 
-const user = await userModel.create({
-email,
-password,
-username
-})
+    res.status(201).json({
+      user: {
+        _id: user._id,
+        email: user.email,
+        name: user.name
+      },
+      token
+    })
 
-const token = jwt.sign(
-{ userId: user._id },
-process.env.JWT_SECRET,
-{ expiresIn: "3d" }
-)
-
-res.cookie("token", token)
-
-res.status(201).json({
-user,
-token
-})
-
-} catch (error) {
-console.log(error)
-res.status(500).json({
-message: "Register failed"
-})
-}
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ message: "Server error" })
+  }
 }
 
 /**
