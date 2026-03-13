@@ -1,4 +1,4 @@
-import {useAuth } from "../hooks/useAuth";
+import {useAuth } from "../hooks/useAuth.api.js";
 import { Navigate } from "react-router";
 import React from 'react'
 
