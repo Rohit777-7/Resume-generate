@@ -8,26 +8,33 @@ const tokenBlackListModel = require("../models/blacklist.model")
 * - POST /api/auth/register
 */
 async function userRegisterController(req, res) {
-    const { email, password, name } = req.body
+    const { email, password, username } = req.body
 
-    const isExists = await userModel.findOne({
-        email: email
-    })
+    const isExists = await userModel.findOne({ email })
 
     if (isExists) {
         return res.status(422).json({
-            message: "User already exists with email.",
-            status: "failed"
+            message: "User already exists with email."
         })
     }
 
     const user = await userModel.create({
-        email, password, name
+        email,
+        password,
+        name: username
     })
 
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "3d" })
+    const token = jwt.sign(
+        { userId: user._id },
+        process.env.JWT_SECRET,
+        { expiresIn: "3d" }
+    )
 
-    res.cookie("token", token)
+    res.cookie("token", token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none"
+    })
 
     res.status(201).json({
         user: {
@@ -37,8 +44,6 @@ async function userRegisterController(req, res) {
         },
         token
     })
-
-    await emailService.sendRegistrationEmail(user.email, user.name)
 }
 
 /**
