@@ -11,7 +11,7 @@ app.use(cookieParser())
 app.use(cors({
   origin: [
     "http://localhost:5173",
-    "https://resume-generate-gxgaed2n1-rohitkumar-yadavs-projects.vercel.app"
+    "https://resume-generate-git-main-rohitkumar-yadavs-projects.vercel.app"
   ],
   credentials: true
 }))
